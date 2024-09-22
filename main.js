@@ -155,7 +155,7 @@ header.innerHTML = `
 </div>
 <div id="search-container">
   <input type="text" placeholder="Buscar" id="search-input">
-  <button type="submit">
+  <button type="submit" id="search-button">
     <img id="search-img" src="https://img.icons8.com/ios-filled/50/000000/search.png" alt="Search">
   </button>
 </div>
@@ -173,6 +173,9 @@ header.innerHTML = `
 
 document.body.appendChild(header);
 
+const searchButton = document.querySelector("#search-button");
+const searchInput = document.querySelector("#search-input");
+
 // MAIN
 
 const main = document.createElement("main");
@@ -182,7 +185,7 @@ main.innerHTML = `
 </div>
 <div id="main-below-banner">
 <section id="filter-section">
-<button class="btn transparent">Borrar filtros</button>
+<button id="filterBtn" class="btn transparent">Borrar filtros</button>
 <nav id="price-filter">
 </nav>
 <nav id="brand-filter">
@@ -201,10 +204,12 @@ document.body.appendChild(main);
 
 // FILTER
 
+const filterBtn = document.querySelector("#filterBtn");
+
 // PRICE
 
-const brandPrice = document.querySelector("#price-filter");
-brandPrice.innerHTML = `
+const priceFilter = document.querySelector("#price-filter");
+priceFilter.innerHTML = `
 <span class="filterText">Precio</span>
 <input type="range" min="0" max="2000" step="1" value="2000"/>
 <input type="range" min="0" max="2000" step="1" value="0"/>
@@ -219,37 +224,114 @@ brandFilter.innerHTML = `
 const brandUl = document.createElement("ul");
 brandFilter.appendChild(brandUl);
 
-for (const product of products) {
-  const brandLi = document.createElement("li");
-  brandLi.id = product.seller + "-filter";
-  brandLi.className = "brandLi";
-  brandLi.innerHTML = `
-  <input type="checkbox" id="${product.seller}" name="${product.seller}"/>
-  <label for="${product.seller}">${product.seller}</label>
-  `;
-  brandUl.appendChild(brandLi);
+function printBrands() {
+  const brandList = [];
+  for (const product of products) {
+    if (!brandList.includes(product.seller)) {
+      const brandLi = document.createElement("li");
+      brandLi.id = product.seller + "-filter";
+      brandLi.className = "brandLi";
+      brandLi.innerHTML = `
+      <form>
+      <input type="checkbox" class="brandCheckbox" id="${product.seller}Brand" name="${product.seller}"/>
+      <label for="${product.seller}">${product.seller}</label>
+      </form>
+      `;
+      brandUl.appendChild(brandLi);
+      brandList.push(product.seller);
+    }
+  }
 }
+
+printBrands();
+
+const brandCheckboxes = document.querySelectorAll(".brandCheckbox");
+
+for (const brandCheckbox of brandCheckboxes) {
+  brandCheckbox.addEventListener("click", () =>
+    searchProduct(brandCheckbox.name)
+  );
+}
+// FREESHIPPING
+
+const freeShippingilter = document.querySelector("#freeshipping-filter");
+freeShippingilter.innerHTML = `
+<span class="filterText">Envío gratis</span>
+<form id ="freeShippingForm">
+<input type="radio" id="true" value="Yes"/>
+<label for="true">Sí</label>
+<input type="radio" id="false" value="No"/>
+<label for="false">No</label>
+</form>
+`;
+
+// RATING
+
+const ratingFilter = document.querySelector("#rating-filter");
+ratingFilter.innerHTML = `
+<span class="ratingText">Valoración</span>
+<form id ="ratingForm">
+<input type="radio" id="rating4" value="4 stars and more"/>
+<label for="true">✩✩✩✩ y más</label>
+<input type="radio" id="ratingAll" value="All"/>
+<label for="false">Todas las valoraciones</label>
+</form>
+`;
 
 // PRODUCTS
 
 const productSection = document.querySelector("#product-section");
 
-for (const product of products) {
-  const article = document.createElement("article");
-  article.className = "product";
-  article.innerHTML = `
+function printProducts(productList) {
+  productSection.innerHTML = "";
+  for (const product of productList) {
+    const article = document.createElement("article");
+    article.className = "product";
+    article.innerHTML = `
   <img class="productImg" src="${product.image}" alt="${product.name}"/>
-  <h3>${product.name}</h3>
-  <p class="price">${product.price}€</p>
-  <p class="rating">${product.rating}</p>
+  <h3 class="productName">${product.name}</h3>
+  <p class="productPrice">${product.price}€</p>
+  <p class="productRating">${product.rating}/5 <img id="star-rating" src="https://pngimg.com/uploads/star/star_PNG1592.png" alt="Estrella"/></p>
   `;
 
-  if (product.freeShipping) {
-    article.innerHTML += `<p class="shipping">Envío gratis</p>`;
-  }
+    if (product.freeShipping) {
+      article.innerHTML += `<p class="productShipping">Envío gratis</p>`;
+    }
 
-  productSection.appendChild(article);
+    productSection.appendChild(article);
+  }
 }
+
+function searchProduct(wordSearched) {
+  const productsSearched = [];
+
+  for (const product of products) {
+    if (
+      Object.values(product)
+        .toString()
+        .toLowerCase()
+        .includes(wordSearched.toLowerCase())
+    ) {
+      productsSearched.push(product);
+    }
+  }
+  printProducts(productsSearched);
+  searchInput.value = "";
+}
+
+function searchProductEnter(wordSearched) {
+  if (event.key == "Enter") {
+    searchProduct(wordSearched);
+  }
+}
+
+searchButton.addEventListener("click", () => searchProduct(searchInput.value));
+searchInput.addEventListener("keydown", () =>
+  searchProductEnter(searchInput.value)
+);
+filterBtn.addEventListener("click", () => printProducts(products));
+
+printProducts(products);
 
 // HTML Y CSS
 
