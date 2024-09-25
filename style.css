@@ -177,6 +177,28 @@ display: flex;
   font-weight: 500;
 }
 
+#priceFilter {
+  display:flex;
+  flex-direction: column;
+  width: 120px;
+}
+
+#priceFilter > div {
+  display: flex;
+  justify-content: space-between;
+}
+
+.priceInput{
+  width: 50px;
+  text-align: center;
+}
+
+.priceInput::-webkit-outer-spin-button,
+.priceInput::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
 #star-rating {
   max-width: 25px;
   height: 16px;

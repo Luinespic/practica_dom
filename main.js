@@ -6,7 +6,7 @@ const products = [
       "https://m.media-amazon.com/images/I/618nXc9a7gL._AC_UF894,1000_QL80_.jpg",
     seller: "Samsung",
     freeShipping: true,
-    rating: 4.7,
+    rating: 3.7,
     category: "Smartphones",
   },
   {
@@ -215,11 +215,22 @@ function printMain() {
 
 function printPriceFilter() {
   const priceFilter = document.querySelector("#price-filter");
+  const productPrices = products.map((product) => product.price);
+  const minPrice = Math.floor(Math.min(...productPrices));
+  const maxPrice = Math.ceil(Math.max(...productPrices));
 
   priceFilter.innerHTML = `
   <span class="filterText">Precio</span>
-  <input type="range" min="0" max="2000" step="1" value="2000"/>
-  <input type="range" min="0" max="2000" step="1" value="0"/>
+  <form id="priceFilter">
+    <div>
+      <label for=minPrice>desde</label>
+      <input type="number" min="${minPrice}" max="${maxPrice}" id="minPrice" class="priceInput" name="minPrice" value="${minPrice}"/>
+    </div>
+    <div>
+      <label for=maxPrice>hasta</label>
+      <input type="number" min="${minPrice}" max="${maxPrice}" id="maxPrice" class="priceInput" name="priceFilter" value="${maxPrice}"/>
+    </div>
+  </form>
   `;
 }
 
@@ -262,9 +273,9 @@ function printFreeShippingFilter() {
   freeShippingilter.innerHTML = `
   <span class="filterText">Envío gratis</span>
   <form id ="freeShippingForm">
-    <input type="radio" id="true" value="true" class="radioBtn freeShipping" name="shipping"/>
+    <input type="radio" id="true" value="free" class="radioBtn freeShipping" name="shipping"/>
     <label for="true">Sí</label>
-    <input type="radio" id="false" value="false" class="radioBtn" name="shipping"/>
+    <input type="radio" id="false" value="notFree" class="radioBtn freeShipping" name="shipping"/>
     <label for="false">No</label>
   </form>
   `;
@@ -340,80 +351,6 @@ function searchProductEnter(wordSearched) {
   }
 }
 
-// function searchBrand(wordSearched, isChecked) {
-//   // //   if (isChecked) {
-//   // //     for (const product of products) {
-//   // //       if (product.seller.includes(wordSearched)) {
-//   // //         productsSearchedFilter.push(product);
-//   // //       }
-//   // //     }
-//   // //     printProducts(productsSearchedFilter);
-//   // //   } else {
-//   // //     removeFilterProducts(wordSearched);
-//   // //   }
-// }
-
-function removeFilterProducts(wordSearched) {
-  for (let i = productsSearchedFilter.length - 1; i >= 0; i--) {
-    const product = productsSearchedFilter[i];
-    if (product.seller == wordSearched) {
-      productsSearchedFilter.splice(i, 1);
-    }
-  }
-  printProducts(productsSearchedFilter);
-}
-
-function searchFreeShipping(isShippingFree) {
-  if (productsSearchedFilter.length === 0) {
-    if (isShippingFree == "true") {
-      for (const product of products) {
-        if (product.freeShipping) {
-          productsSearchedFilter.push(product);
-        }
-      }
-      printProducts(productsSearchedFilter);
-    } else {
-      for (const product of products) {
-        if (!product.freeShipping) {
-          productsSearchedFilter.push(product);
-        }
-      }
-      printProducts(productsSearchedFilter);
-    }
-  } else {
-    if (isShippingFree == "true") {
-      for (let i = productsSearchedFilter.length - 1; i >= 0; i--) {
-        const product = productsSearchedFilter[i];
-        if (!product.freeShipping) {
-          productsSearchedFilter.splice(i, 1);
-        }
-      }
-      printProducts(productsSearchedFilter);
-    }
-  }
-}
-
-function searchRating(starsNumber) {
-  console.log(starsNumber);
-  // if (isShippingFree == "true") {
-  //   for (const product of products) {
-  //     if (product.freeShipping) {
-  //       productsSearched.push(product);
-  //     }
-  //   }
-  //   printProducts(productsSearched);
-  //   productsSearched = [];
-  // } else {
-  //   for (const product of products) {
-  //     if (!product.freeShipping) {
-  //       productsSearched.push(product);
-  //     }
-  //   }
-  //   printProducts(productsSearched);
-  //   productsSearched = [];
-  // }
-}
-
 function clearFilters() {
   const brandCheckboxes = document.querySelectorAll(".brandCheckbox");
   const filterRadioButtons = document.querySelectorAll(".radioBtn");
@@ -433,64 +370,46 @@ function aplyFilters() {
   const freeShippingButtons = document.querySelectorAll(".freeShipping");
   const ratingButtons = document.querySelectorAll(".rating");
 
-  let productsSearchedFilter = [];
+  let productsSearchedFilter = products;
 
-  for (const brandCheckbox of brandCheckboxes) {
-    if (brandCheckbox.checked === true) {
-      const brandName = brandCheckbox.name;
+  // Filtrar por marca
+  const selectedBrands = Array.from(brandCheckboxes)
+    .filter((checkbox) => checkbox.checked)
+    .map((checkbox) => checkbox.name);
 
-      for (const product of products) {
-        if (product.seller == brandName) {
-          productsSearchedFilter.push(product);
-        }
-      }
-    } else {
-      for (let i = productsSearchedFilter.length - 1; i >= 0; i--) {
-        const product = productsSearchedFilter[i];
-        if (product.seller == brandName) {
-          productsSearchedFilter.splice(i, 1);
-        }
-      }
-    }
+  if (selectedBrands.length > 0) {
+    productsSearchedFilter = productsSearchedFilter.filter((product) =>
+      selectedBrands.includes(product.seller)
+    );
   }
 
-  for (const freeShippingButton of freeShippingButtons) {
-    if (freeShippingButton.checked === true) {
-      for (let i = productsSearchedFilter.length - 1; i >= 0; i--) {
-        const product = productsSearchedFilter[i];
-        if (product.freeShipping === true) {
-          productsSearchedFilter.push(product);
-        } else {
-          productsSearchedFilter.splice(i, 1);
-        }
-      }
-    }
-    if (freeShippingButton.checked === false) {
-      for (let i = productsSearchedFilter.length - 1; i >= 0; i--) {
-        const product = productsSearchedFilter[i];
-        if (product.freeShipping === false) {
-          productsSearchedFilter.push(product);
-        } else {
-          productsSearchedFilter.splice(i, 1);
-        }
-      }
-    }
+  // Filtrar por envío gratis
+  const isFreeShippingSelected = Array.from(freeShippingButtons).some(
+    (button) => button.checked
+  );
+  const valueFreeShipping = Array.from(freeShippingButtons)
+    .filter((radio) => radio.checked)
+    .map((radio) => radio.value);
+
+  if (isFreeShippingSelected && valueFreeShipping == "free") {
+    productsSearchedFilter = productsSearchedFilter.filter(
+      (product) => product.freeShipping === true
+    );
+  }
+  if (isFreeShippingSelected && valueFreeShipping == "notFree") {
+    productsSearchedFilter = productsSearchedFilter.filter(
+      (product) => product.freeShipping === false
+    );
   }
 
-  for (const ratingButton of ratingButtons) {
-    if (
-      ratingButton.checked === true &&
-      ratingButton.value == "4 stars and more"
-    ) {
-      for (let i = productsSearchedFilter.length - 1; i >= 0; i--) {
-        const product = productsSearchedFilter[i];
-        if (product.rating >= 4) {
-          productsSearchedFilter.push(product);
-        } else {
-          productsSearchedFilter.splice(i, 1);
-        }
-      }
-    }
+  // Filtrar por rating
+  const isRatingSelected = Array.from(ratingButtons).some(
+    (button) => button.checked && button.value === "4 stars and more"
+  );
+  if (isRatingSelected) {
+    productsSearchedFilter = productsSearchedFilter.filter(
+      (product) => product.rating >= 4
+    );
   }
 
   printProducts(productsSearchedFilter);
