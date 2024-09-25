@@ -145,154 +145,167 @@ const products = [
   },
 ];
 
-// HEADER
+function printHeader() {
+  const header = document.createElement("header");
 
-const header = document.createElement("header");
-header.innerHTML = `
-<nav id="header">
-<div id="logo-container">
-<img id="logo-img" src="https://cdn.pccomponentes.com/img/logos/logo-pccomponentes.svg" alt="PcComponentes Logo"/>
-</div>
-<div id="search-container">
-  <input type="text" placeholder="Buscar" id="search-input">
-  <button type="submit" id="search-button">
-    <img id="search-img" src="https://img.icons8.com/ios-filled/50/000000/search.png" alt="Search">
-  </button>
-</div>
-<div id="accountandbasketcontainer">
-<div id="account-container">
-<img id="account-img" src="https://cdn-icons-png.flaticon.com/512/2354/2354573.png" alt="Mi Cuenta"/>
-<p>Mi cuenta</p>
-</div>
-<div id="basket-container">
-<img id="basket-img" src="https://cdn-icons-png.flaticon.com/512/107/107831.png" alt="Carrito"/>
-<p>Mi cesta</p>
-</div>
-</div>
-</nav>`;
+  header.innerHTML = `
+  <nav id="header">
+    <div id="logo-container">
+      <img id="logo-img" src="https://cdn.pccomponentes.com/img/logos/logo-pccomponentes.svg" alt="PcComponentes Logo"/>
+    </div>
+    <div id="search-container">
+      <input type="text" placeholder="Buscar" id="search-input">
+      <button type="submit" id="search-button">
+        <img id="search-img" src="https://img.icons8.com/ios-filled/50/000000/search.png" alt="Search">
+      </button>
+    </div>
+    <div id="accountandbasketcontainer">
+      <div id="account-container">
+        <img id="account-img" src="https://cdn-icons-png.flaticon.com/512/2354/2354573.png" alt="Mi Cuenta"/>
+        <p>Mi cuenta</p>
+      </div>
+      <div id="basket-container">
+        <img id="basket-img" src="https://cdn-icons-png.flaticon.com/512/107/107831.png" alt="Carrito"/>
+        <p>Mi cesta</p>
+      </div>
+    </div>
+  </nav>`;
 
-document.body.appendChild(header);
+  document.body.appendChild(header);
 
-const searchButton = document.querySelector("#search-button");
-const searchInput = document.querySelector("#search-input");
+  const searchButton = document.querySelector("#search-button");
+  const searchInput = document.querySelector("#search-input");
 
-// MAIN
+  searchButton.addEventListener("click", () =>
+    searchProduct(searchInput.value)
+  );
+  searchInput.addEventListener("keydown", () =>
+    searchProductEnter(searchInput.value)
+  );
+}
 
-const main = document.createElement("main");
-main.innerHTML = `
-<div id="banner-section">
-<img id="main-banner" src="https://img.pccomponentes.com/pcblog/1726092000000/banner-cabecera-desktop-pcc-lpd-sept-24-1560x250px-v2.jpg" alt="Banner principal"/>
-</div>
-<div id="main-below-banner">
-<section id="filter-section">
-<button id="filterBtn" class="btn transparent">Borrar filtros</button>
-<nav id="price-filter">
-</nav>
-<nav id="brand-filter">
-</nav>
-<nav id="freeshipping-filter">
-</nav>
-<nav id="rating-filter">
-</nav>
-</section>
-<section id="product-section">
-</section>
-</div>
-`;
+function printMain() {
+  const main = document.createElement("main");
 
-document.body.appendChild(main);
+  main.innerHTML = `
+  <div id="banner-section">
+    <img id="main-banner" src="https://img.pccomponentes.com/pcblog/1726092000000/banner-cabecera-desktop-pcc-lpd-sept-24-1560x250px-v2.jpg" alt="Banner principal"/>
+  </div>
+  <div id="main-below-banner">
+    <section id="filter-section">
+      <button id="filterBtn" class="btn transparent">Borrar filtros</button>
+      <nav id="price-filter">
+      </nav>
+      <nav id="brand-filter">
+      </nav>
+      <nav id="freeshipping-filter">
+      </nav>
+      <nav id="rating-filter">
+      </nav>
+    </section>
+    <section id="product-section">
+    </section>
+  </div>
+  `;
+  document.body.appendChild(main);
 
-// FILTER
+  const filterBtn = document.querySelector("#filterBtn");
+  filterBtn.addEventListener("click", () => clearFilters());
+}
 
-const filterBtn = document.querySelector("#filterBtn");
+function printPriceFilter() {
+  const priceFilter = document.querySelector("#price-filter");
 
-// PRICE
+  priceFilter.innerHTML = `
+  <span class="filterText">Precio</span>
+  <input type="range" min="0" max="2000" step="1" value="2000"/>
+  <input type="range" min="0" max="2000" step="1" value="0"/>
+  `;
+}
 
-const priceFilter = document.querySelector("#price-filter");
-priceFilter.innerHTML = `
-<span class="filterText">Precio</span>
-<input type="range" min="0" max="2000" step="1" value="2000"/>
-<input type="range" min="0" max="2000" step="1" value="0"/>
-`;
-
-// BRANDS
-
-const brandFilter = document.querySelector("#brand-filter");
-brandFilter.innerHTML = `
-<span class="filterText">Marcas</span>
-`;
-const brandUl = document.createElement("ul");
-brandFilter.appendChild(brandUl);
-
-function printBrands() {
+function printBrandFilter() {
+  const brandFilter = document.querySelector("#brand-filter");
+  const brandUl = document.createElement("ul");
   const brandList = [];
+
+  brandFilter.innerHTML = `
+  <span class="filterText">Marcas</span>
+  `;
+  brandFilter.appendChild(brandUl);
+
   for (const product of products) {
     if (!brandList.includes(product.seller)) {
       const brandLi = document.createElement("li");
+
       brandLi.id = product.seller + "-filter";
       brandLi.className = "brandLi";
       brandLi.innerHTML = `
       <form>
-      <input type="checkbox" class="brandCheckbox" id="${product.seller}Brand" name="${product.seller}"/>
-      <label for="${product.seller}">${product.seller}</label>
+        <input type="checkbox" class="brandCheckbox" id="${product.seller}Brand" name="${product.seller}"/>
+        <label for="${product.seller}">${product.seller}</label>
       </form>
       `;
       brandUl.appendChild(brandLi);
       brandList.push(product.seller);
     }
   }
+
+  const brandCheckboxes = document.querySelectorAll(".brandCheckbox");
+  for (const brandCheckbox of brandCheckboxes) {
+    brandCheckbox.addEventListener("click", aplyFilters);
+  }
 }
 
-printBrands();
+function printFreeShippingFilter() {
+  const freeShippingilter = document.querySelector("#freeshipping-filter");
 
-const brandCheckboxes = document.querySelectorAll(".brandCheckbox");
+  freeShippingilter.innerHTML = `
+  <span class="filterText">Envío gratis</span>
+  <form id ="freeShippingForm">
+    <input type="radio" id="true" value="true" class="radioBtn freeShipping" name="shipping"/>
+    <label for="true">Sí</label>
+    <input type="radio" id="false" value="false" class="radioBtn" name="shipping"/>
+    <label for="false">No</label>
+  </form>
+  `;
 
-for (const brandCheckbox of brandCheckboxes) {
-  brandCheckbox.addEventListener("click", () =>
-    searchProduct(brandCheckbox.name)
-  );
+  const freeShippingForm = document.querySelector("#freeShippingForm");
+
+  freeShippingForm.addEventListener("click", aplyFilters);
 }
-// FREESHIPPING
 
-const freeShippingilter = document.querySelector("#freeshipping-filter");
-freeShippingilter.innerHTML = `
-<span class="filterText">Envío gratis</span>
-<form id ="freeShippingForm">
-<input type="radio" id="true" value="Yes"/>
-<label for="true">Sí</label>
-<input type="radio" id="false" value="No"/>
-<label for="false">No</label>
-</form>
-`;
+function printRatingFilter() {
+  const ratingFilter = document.querySelector("#rating-filter");
 
-// RATING
+  ratingFilter.innerHTML = `
+  <span class="ratingText">Valoración</span>
+  <form id ="ratingForm">
+    <input type="radio" id="rating4" value="4 stars and more" class="radioBtn rating" name="rating"/>
+    <label for="true">✩✩✩✩ y más</label>
+    <input type="radio" id="ratingAll" value="All" class="radioBtn" name="rating"/>
+    <label for="false">Todas las valoraciones</label>
+  </form>
+  `;
 
-const ratingFilter = document.querySelector("#rating-filter");
-ratingFilter.innerHTML = `
-<span class="ratingText">Valoración</span>
-<form id ="ratingForm">
-<input type="radio" id="rating4" value="4 stars and more"/>
-<label for="true">✩✩✩✩ y más</label>
-<input type="radio" id="ratingAll" value="All"/>
-<label for="false">Todas las valoraciones</label>
-</form>
-`;
+  const ratingForm = document.querySelector("#ratingForm");
 
-// PRODUCTS
-
-const productSection = document.querySelector("#product-section");
+  ratingForm.addEventListener("click", aplyFilters);
+}
 
 function printProducts(productList) {
+  const productSection = document.querySelector("#product-section");
+
   productSection.innerHTML = "";
   for (const product of productList) {
     const article = document.createElement("article");
+
     article.className = "product";
     article.innerHTML = `
-  <img class="productImg" src="${product.image}" alt="${product.name}"/>
-  <h3 class="productName">${product.name}</h3>
-  <p class="productPrice">${product.price}€</p>
-  <p class="productRating">${product.rating}/5 <img id="star-rating" src="https://pngimg.com/uploads/star/star_PNG1592.png" alt="Estrella"/></p>
-  `;
+    <img class="productImg" src="${product.image}" alt="${product.name}"/>
+    <h3 class="productName">${product.name}</h3>
+    <p class="productPrice">${product.price}€</p>
+    <p class="productRating">${product.rating}/5 <img id="star-rating" src="https://pngimg.com/uploads/star/star_PNG1592.png" alt="Estrella"/></p>
+    `;
 
     if (product.freeShipping) {
       article.innerHTML += `<p class="productShipping">Envío gratis</p>`;
@@ -303,7 +316,9 @@ function printProducts(productList) {
 }
 
 function searchProduct(wordSearched) {
-  const productsSearched = [];
+  let productsSearched = [];
+  const searchInput = document.querySelector("#search-input");
+  searchInput.value = "";
 
   for (const product of products) {
     if (
@@ -315,8 +330,8 @@ function searchProduct(wordSearched) {
       productsSearched.push(product);
     }
   }
+
   printProducts(productsSearched);
-  searchInput.value = "";
 }
 
 function searchProductEnter(wordSearched) {
@@ -325,12 +340,168 @@ function searchProductEnter(wordSearched) {
   }
 }
 
-searchButton.addEventListener("click", () => searchProduct(searchInput.value));
-searchInput.addEventListener("keydown", () =>
-  searchProductEnter(searchInput.value)
-);
-filterBtn.addEventListener("click", () => printProducts(products));
+// function searchBrand(wordSearched, isChecked) {
+//   // //   if (isChecked) {
+//   // //     for (const product of products) {
+//   // //       if (product.seller.includes(wordSearched)) {
+//   // //         productsSearchedFilter.push(product);
+//   // //       }
+//   // //     }
+//   // //     printProducts(productsSearchedFilter);
+//   // //   } else {
+//   // //     removeFilterProducts(wordSearched);
+//   // //   }
+// }
 
+function removeFilterProducts(wordSearched) {
+  for (let i = productsSearchedFilter.length - 1; i >= 0; i--) {
+    const product = productsSearchedFilter[i];
+    if (product.seller == wordSearched) {
+      productsSearchedFilter.splice(i, 1);
+    }
+  }
+  printProducts(productsSearchedFilter);
+}
+
+function searchFreeShipping(isShippingFree) {
+  if (productsSearchedFilter.length === 0) {
+    if (isShippingFree == "true") {
+      for (const product of products) {
+        if (product.freeShipping) {
+          productsSearchedFilter.push(product);
+        }
+      }
+      printProducts(productsSearchedFilter);
+    } else {
+      for (const product of products) {
+        if (!product.freeShipping) {
+          productsSearchedFilter.push(product);
+        }
+      }
+      printProducts(productsSearchedFilter);
+    }
+  } else {
+    if (isShippingFree == "true") {
+      for (let i = productsSearchedFilter.length - 1; i >= 0; i--) {
+        const product = productsSearchedFilter[i];
+        if (!product.freeShipping) {
+          productsSearchedFilter.splice(i, 1);
+        }
+      }
+      printProducts(productsSearchedFilter);
+    }
+  }
+}
+
+function searchRating(starsNumber) {
+  console.log(starsNumber);
+  // if (isShippingFree == "true") {
+  //   for (const product of products) {
+  //     if (product.freeShipping) {
+  //       productsSearched.push(product);
+  //     }
+  //   }
+  //   printProducts(productsSearched);
+  //   productsSearched = [];
+  // } else {
+  //   for (const product of products) {
+  //     if (!product.freeShipping) {
+  //       productsSearched.push(product);
+  //     }
+  //   }
+  //   printProducts(productsSearched);
+  //   productsSearched = [];
+  // }
+}
+
+function clearFilters() {
+  const brandCheckboxes = document.querySelectorAll(".brandCheckbox");
+  const filterRadioButtons = document.querySelectorAll(".radioBtn");
+
+  for (const brandCheckbox of brandCheckboxes) {
+    brandCheckbox.checked = false;
+  }
+  for (const filterRadioButton of filterRadioButtons) {
+    filterRadioButton.checked = false;
+  }
+
+  printProducts(products);
+}
+
+function aplyFilters() {
+  const brandCheckboxes = document.querySelectorAll(".brandCheckbox");
+  const freeShippingButtons = document.querySelectorAll(".freeShipping");
+  const ratingButtons = document.querySelectorAll(".rating");
+
+  let productsSearchedFilter = [];
+
+  for (const brandCheckbox of brandCheckboxes) {
+    if (brandCheckbox.checked === true) {
+      const brandName = brandCheckbox.name;
+
+      for (const product of products) {
+        if (product.seller == brandName) {
+          productsSearchedFilter.push(product);
+        }
+      }
+    } else {
+      for (let i = productsSearchedFilter.length - 1; i >= 0; i--) {
+        const product = productsSearchedFilter[i];
+        if (product.seller == brandName) {
+          productsSearchedFilter.splice(i, 1);
+        }
+      }
+    }
+  }
+
+  for (const freeShippingButton of freeShippingButtons) {
+    if (freeShippingButton.checked === true) {
+      for (let i = productsSearchedFilter.length - 1; i >= 0; i--) {
+        const product = productsSearchedFilter[i];
+        if (product.freeShipping === true) {
+          productsSearchedFilter.push(product);
+        } else {
+          productsSearchedFilter.splice(i, 1);
+        }
+      }
+    }
+    if (freeShippingButton.checked === false) {
+      for (let i = productsSearchedFilter.length - 1; i >= 0; i--) {
+        const product = productsSearchedFilter[i];
+        if (product.freeShipping === false) {
+          productsSearchedFilter.push(product);
+        } else {
+          productsSearchedFilter.splice(i, 1);
+        }
+      }
+    }
+  }
+
+  for (const ratingButton of ratingButtons) {
+    if (
+      ratingButton.checked === true &&
+      ratingButton.value == "4 stars and more"
+    ) {
+      for (let i = productsSearchedFilter.length - 1; i >= 0; i--) {
+        const product = productsSearchedFilter[i];
+        if (product.rating >= 4) {
+          productsSearchedFilter.push(product);
+        } else {
+          productsSearchedFilter.splice(i, 1);
+        }
+      }
+    }
+  }
+
+  printProducts(productsSearchedFilter);
+}
+
+printHeader();
+printMain();
+printPriceFilter();
+printBrandFilter();
+printFreeShippingFilter();
+printRatingFilter();
 printProducts(products);
 
 // HTML Y CSS
