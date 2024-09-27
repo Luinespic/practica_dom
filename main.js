@@ -296,11 +296,11 @@ function printRatingFilter() {
   <form id ="ratingForm">
     <div>
       <input type="radio" id="rating4" value="4 stars and more" class="radioBtn rating" name="rating"/>
-      <label for="true">✩✩✩✩ y más</label>
+      <label for="rating4">✩✩✩✩ y más</label>
     </div>
     <div>
       <input type="radio" id="ratingAll" value="All" class="radioBtn" name="rating"/>
-      <label for="false">Todas las valoraciones</label>
+      <label for="ratingAll">Todas las valoraciones</label>
     </div>
   </form>
   `;
