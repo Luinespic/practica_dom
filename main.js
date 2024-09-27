@@ -149,6 +149,7 @@ function printHeader() {
   const header = document.createElement("header");
 
   header.innerHTML = `
+  <div id=block"></div>
   <nav id="header">
     <div id="logo-container">
       <img id="logo-img-pc" src="https://cdn.pccomponentes.com/img/logos/logo-pccomponentes.svg" alt="PcComponentes Logo"/>
@@ -311,8 +312,12 @@ function printRatingFilter() {
 
 function printProducts(productList) {
   const productSection = document.querySelector("#product-section");
+  const productMessage = document.createElement("div");
 
+  productMessage.id = "productMessage";
+  productMessage.className = "notDisplayed";
   productSection.innerHTML = "";
+
   for (const product of productList) {
     const article = document.createElement("article");
 
@@ -330,6 +335,7 @@ function printProducts(productList) {
 
     productSection.appendChild(article);
   }
+  productSection.appendChild(productMessage);
 }
 
 function searchProduct(wordSearched) {
@@ -347,8 +353,19 @@ function searchProduct(wordSearched) {
       productsSearched.push(product);
     }
   }
+  if (productsSearched.length === 0) {
+    printProducts(productsSearched);
 
-  printProducts(productsSearched);
+    const productSection = document.querySelector("#product-section");
+    const productMessage = document.querySelector("#productMessage");
+
+    productMessage.className = "displayed";
+    productMessage.innerHTML = `
+    <p>Ningún resultado coincide con la búsqueda</p>
+    `;
+  } else {
+    printProducts(productsSearched);
+  }
 }
 
 function searchProductEnter(wordSearched) {
@@ -418,7 +435,19 @@ function aplyFilters() {
     );
   }
 
-  printProducts(productsSearchedFilter);
+  if (productsSearchedFilter.length === 0) {
+    printProducts(productsSearchedFilter);
+
+    const productSection = document.querySelector("#product-section");
+    const productMessage = document.querySelector("#productMessage");
+
+    productMessage.className = "displayed";
+    productMessage.innerHTML = `
+    <p>Ningún resultado coincide con la selección</p>
+    `;
+  } else {
+    printProducts(productsSearchedFilter);
+  }
 }
 
 printHeader();
