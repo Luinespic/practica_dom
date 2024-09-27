@@ -151,7 +151,8 @@ function printHeader() {
   header.innerHTML = `
   <nav id="header">
     <div id="logo-container">
-      <img id="logo-img" src="https://cdn.pccomponentes.com/img/logos/logo-pccomponentes.svg" alt="PcComponentes Logo"/>
+      <img id="logo-img-pc" src="https://cdn.pccomponentes.com/img/logos/logo-pccomponentes.svg" alt="PcComponentes Logo"/>
+      <img id="logo-img-mobile" src="https://play-lh.googleusercontent.com/J01oXl4FLF-YOzINE17L7dDHr4w2EwlozqwyRTMJtNioaDUycuccWY1twuZsEUV5XTw" alt="PcComponentes Logo"/>
     </div>
     <div id="search-container">
       <input type="text" placeholder="Buscar" id="search-input">
@@ -193,7 +194,8 @@ function printMain() {
   </div>
   <div id="main-below-banner">
     <section id="filter-section">
-      <button id="filterBtn" class="btn transparent">Borrar filtros</button>
+      <button id="filterBtn-pc" class="btn transparent">Borrar filtros</button>
+      <button id="filterBtn-mobile">Filtrar</button>
       <nav id="price-filter">
       </nav>
       <nav id="brand-filter">
@@ -209,7 +211,7 @@ function printMain() {
   `;
   document.body.appendChild(main);
 
-  const filterBtn = document.querySelector("#filterBtn");
+  const filterBtn = document.querySelector("#filterBtn-pc");
   filterBtn.addEventListener("click", () => clearFilters());
 }
 
@@ -221,7 +223,7 @@ function printPriceFilter() {
 
   priceFilter.innerHTML = `
   <span class="filterText">Precio</span>
-  <form id="priceFilter">
+  <form id="priceFilterForm">
     <div>
       <label for=minPrice>desde</label>
       <input type="number" min="${minPrice}" max="${maxPrice}" id="minPrice" class="priceInput" name="minPrice" value="${minPrice}"/>
@@ -289,12 +291,16 @@ function printRatingFilter() {
   const ratingFilter = document.querySelector("#rating-filter");
 
   ratingFilter.innerHTML = `
-  <span class="ratingText">Valoración</span>
+  <span class="filterText">Valoración</span>
   <form id ="ratingForm">
-    <input type="radio" id="rating4" value="4 stars and more" class="radioBtn rating" name="rating"/>
-    <label for="true">✩✩✩✩ y más</label>
-    <input type="radio" id="ratingAll" value="All" class="radioBtn" name="rating"/>
-    <label for="false">Todas las valoraciones</label>
+    <div>
+      <input type="radio" id="rating4" value="4 stars and more" class="radioBtn rating" name="rating"/>
+      <label for="true">✩✩✩✩ y más</label>
+    </div>
+    <div>
+      <input type="radio" id="ratingAll" value="All" class="radioBtn" name="rating"/>
+      <label for="false">Todas las valoraciones</label>
+    </div>
   </form>
   `;
 
